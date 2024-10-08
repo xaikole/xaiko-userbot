@@ -11,7 +11,7 @@
 """ Userbot start point """
 
 import sys
-
+import logging
 from importlib import import_module
 from platform import python_version
 from traceback import format_exc
@@ -23,6 +23,8 @@ from AyiinXd import Ayiin, LOGS, LOOP, bot
 from AyiinXd.ayiin import HOSTED_ON, autobot, autopilot, checking, heroku
 from AyiinXd.modules import ALL_MODULES
 
+# Setting up logging
+logging.basicConfig(level=logging.INFO)
 
 ON = '''
 ❏ ᴀʏɪɪɴ - ᴜsᴇʀʙᴏᴛ ʙᴇʀʜᴀsɪʟ ᴅɪᴀᴋᴛɪғᴋᴀɴ
@@ -45,20 +47,23 @@ async def AyiinMain():
     if not var.BOT_TOKEN:
         await autobot()
     try:
+        # Import all modules
         for module_name in ALL_MODULES:
-            imported_module = import_module(f"AyiinXd.modules.{module_name}")
+            import_module(f"AyiinXd.modules.{module_name}")
         LOGS.info(f"Python Version - {python_version()}")
         LOGS.info(f"Telethon Version - {version.__version__} [Layer: {LAYER}]")
         LOGS.info(f"Userbot Version - {var.BOT_VER}")
         LOGS.info("[✨ BERHASIL DIAKTIFKAN! ✨]")
+
         await checking(Ayiin)
         me = await Ayiin.get_me()
         bo = await bot.get_me()
         await Ayiin.send_message(var.BOTLOG_CHATID, ON.format(var.BOT_VER, HOSTED_ON, me.id, me.first_name, bo.id, bo.first_name))
-    except (ConnectionError, KeyboardInterrupt, NotImplementedError, SystemExit):
-        pass
+    except (ConnectionError, KeyboardInterrupt, NotImplementedError, SystemExit) as e:
+        LOGS.error(f"Kesalahan koneksi atau interupsi: {str(e)}")
+        sys.exit(1)
     except BaseException as e:
-        LOGS.info(str(e), exc_info=True)
+        LOGS.error("Terjadi kesalahan: ", exc_info=True)
         sys.exit(1)
 
 
@@ -68,12 +73,13 @@ if __name__ == "__main__":
         LOOP.run_until_complete(AyiinMain())
     except BaseException:
         LOGS.error(format_exc())
-        sys.exit()
+        sys.exit(1)
 
+# Check argument length
 if len(sys.argv) not in (1, 3, 4):
     Ayiin.disconnect()
 else:
     try:
         Ayiin.run_until_disconnected()
     except ConnectionError:
-        pass
+        LOGS.error("Koneksi terputus.")
