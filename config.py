@@ -7,17 +7,14 @@ from base64 import b64decode
 
 load_dotenv()
 
-
-
 DEVS = [
-    607067484, # Ayiin
-    997461844, # Punya Ayiin
-    844432220, # Risman
-    883761960, # Ari
-    2130526178, # Alfa
-    1663258664, # Kyy
+    607067484,  # Ayiin
+    997461844,  # Punya Ayiin
+    844432220,  # Risman
+    883761960,  # Ari
+    2130526178,  # Alfa
+    1663258664,  # Kyy
 ]
-
 
 GCAST_BLACKLIST = [
     -1001797285258,  # AyiinChats <- New
@@ -54,7 +51,6 @@ GCAST_BLACKLIST = [
     -1001608701614,  # UputtSupport
     -1001812143750,  # Kynan Support
 ]
-
 
 class Config(object):
     # Telegram App KEY and HASH
@@ -198,6 +194,13 @@ class Config(object):
 
     # NSFW Detect DEEP AI
     DEEP_AI = getenv("DEEP_AI", None)
+
+    # Tambahkan CMD_HELP
+    CMD_HELP = {
+        "start": "Memulai bot",
+        "help": "Menampilkan daftar perintah",
+        # Tambahkan perintah lain sesuai kebutuhan
+    }
 
 
 var = Config()
